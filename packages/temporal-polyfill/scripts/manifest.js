@@ -25,17 +25,21 @@ async function writePkgJson(pkgDir, isDev) {
     const exportConfig = exportMap[exportPath]
     const exportName =
       exportPath === '.' ? 'index' : exportPath.replace(/^\.\//, '')
+    const typesPath = !isDev
+      ? './' + exportName + extensions.dts
+      : './.tsc/' +
+        (exportConfig.types || exportConfig.src || exportName) +
+        extensions.dts
 
     distExportMap[exportPath] = {
-      types: !isDev
-        ? './' + exportName + extensions.dts
-        : './.tsc/' +
-          (exportConfig.types || exportConfig.src || exportName) +
-          extensions.dts,
-
-      require: './' + exportName + extensions.cjs,
-      import: './' + exportName + extensions.esm,
-      default: './' + exportName + extensions.esm,
+      require: {
+        types: typesPath,
+        default: './' + exportName + extensions.cjs,
+      },
+      import: {
+        types: typesPath,
+        default: './' + exportName + extensions.esm,
+      },
     }
 
     if (exportConfig.iife) {
@@ -51,9 +55,9 @@ async function writePkgJson(pkgDir, isDev) {
     }
   }
 
-  distManifest.types = distExportMap['.'].types
-  distManifest.main = distExportMap['.'].require
-  distManifest.module = distExportMap['.'].import
+  distManifest.types = distExportMap['.'].import.types
+  distManifest.main = distExportMap['.'].require.default
+  distManifest.module = distExportMap['.'].import.default
 
   if (iifeMinPath) {
     distManifest.unpkg = distManifest.jsdelivr = iifeMinPath

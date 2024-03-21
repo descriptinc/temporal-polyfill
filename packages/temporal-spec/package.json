@@ -19,14 +19,24 @@
   "module": "./index.mjs",
   "exports": {
     ".": {
-      "types": "./index.d.ts",
-      "require": "./index.cjs",
-      "import": "./index.mjs"
+      "require": {
+        "types": "./index.d.ts",
+        "default": "./index.cjs"
+      },
+      "import": {
+        "types": "./index.d.ts",
+        "default": "./index.mjs"
+      }
     },
     "./global": {
-      "types": "./global.d.ts",
-      "require": "./global.cjs",
-      "import": "./global.mjs"
+      "require": {
+        "types": "./global.d.ts",
+        "default": "./global.cjs"
+      },
+      "import": {
+        "types": "./global.d.ts",
+        "default": "./global.mjs"
+      }
     }
   }
 }
